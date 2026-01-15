@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    background: #0D0D0F;
+}
+
+.divider {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.purple-btn {
+    background: #A18EFD;
+}
+
+.purple-btn:hover {
+    background: #8B7AE0;
+}
+
+@keyframes spin {
+    to {
+          transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
