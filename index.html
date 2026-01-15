@@ -1,35 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stage Score</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>body{background:#0D0D0F}@keyframes spin{to{transform:rotate(360deg)}}.animate-spin{animation:spin 1s linear infinite}</style>
-</head>
-<body class="min-h-screen text-white">
-  <div id="app"></div>
-  <script>const TOKEN_ADDRESS="0x0e8a4f5C5C6dD44eBEaBeD5073582Ce48be112AA",TOKEN_SYMBOL="SEED";let isLoggedIn=!1,isLoading=!1,score=null,user=null;const mockOnChainData={purchases:[{txHash:"0xabc123...",amount:5e4,timestamp:1723737600,priceAtBuy:.89e-3},{txHash:"0xdef456...",amount:75e3,timestamp:1727020800,priceAtBuy:1.12e-3}],currentBalance:89500,firstBuyTimestamp:1723737600},priceData={value:1.59e-3};function calculateStageScore(e,t){const n=Date.now()/1e3,a=e.purchases.reduce((e,t)=>e+t.amount*t.priceAtBuy,0),s=Math.min(a/500*333,333),o=Math.floor((n-e.firstBuyTimestamp)/86400),r=Math.min(o/365*333,333),c=e.currentBalance*t,i=c/a;return{overall:Math.round(s+r+Math.min(167*i,334)),breakdown:{purchase:Math.round(s),holdTime:Math.round(r), netTrading:Math.round(Math.min(167*i,334))},metrics:{totalInvested:a,currentValue:c,holdDays:o,returnPercent:(100*(i-1)).toFixed(2)}}}function renderLoginScreen(){return`<div class="min-h-screen flex flex-col items-center justify-center p-6"><div class="text-center mb-8"><h1 class="text-3xl font-bold text-white mb-2">Stage Score</h1><p class="text-gray-500">Connect your X account to view your $SEED score</p></div><button onclick="handleLogin()" class="flex items-center gap-3 px-6 py-3 rounded-lg transition-all hover:bg-gray-900" style="background:#000;border:1px solid rgba(255,255,255,0.2)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span class="text-white font-medium">Login with X</span></button><div class="mt-8 text-center text-gray-600 text-sm max-w-md"><p>Your Stage Score is calculated based on:</p><ul class="mt-2 space-y-1 text-left pl-4"><li>â¢ Purchase history of $SEED</li><li>â¢ Hold time duration</li><li>â¢ Net trading value (P/L)</li></ul></div></div>`}function renderLoadingScreen(){return`<div class="min-h-screen flex flex-col items-center justify-center"><div class="w-8 h-8 border-2 border-gray-600 border-t-white rounded-full animate-spin"></div><p class="mt-4 text-gray-500">Loading your score...</p></div>`}function renderDashboard(){const e=parseFloat(score.metrics.returnPercent);return`<div class="min-h-screen p-6"><div class="max-w-2xl mx-auto"><div class="relative rounded-xl overflow-hidden mb-6" style="background:linear-gradient(180deg,rgba(30,30,35,0.9) 0%,rgba(20,20,25,0.95) 100%);border:1px solid rgba(255,255,255,0.08)"><div class="absolute inset-0 opacity-20" style="background-image:url('https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800');background-size:cover;bjwZÙÜÝ[\ÜÚ][ÛÙ[\Ù[\Ü^\ØØ[JL	JHÙ]]Û\ÜÏH[]]HM]Û\ÜÏH^][\Ë\Ý\\ÝYKX]ÙY[]Û\ÜÏH^][\ËXÙ[\Ø\M]Û\ÜÏHËLMLMÝ[Y[ÈÝ\ÝËZY[Ý[OHÜ\ÛÛYØJMKMKMKJH[YÈÜÏHÝ\Ù\]]\H[HÝ\Ù\[Y_HÛ\ÜÏHËY[Y[ØXÝXÛÝ\Ù]]HÛ\ÜÏH^^Û\Ù[ZXÛ^]Ú]HÝ\Ù\[Y_OÚOÛ\ÜÏH^YÜ^KML^\ÛH	Ý\Ù\\Ù\[Y_OÜ]Û\ÜÏH^Ø\L]LÜ[Û\ÜÏHLÈKLHÝ[Y^^È^YÜ^KLÌÝ[OHXÚÙÜÝ[ØJMKMKMKJH[ÈÌÌÏÜÜ[Ü[Û\ÜÏHLÈKLHÝ[Y^^È^YÜ^KLÌÝ[OHXÚÙÜÝ[ØJMKMKMKJHÜKOÜÜ[Ù]Ù]Ù]]Û\ÜÏH^Ø\L]ÛÛ\ÜÏHMKLÝ[Y[È^]Ú]HÛ[YY][H^\ÛHÝ[OHXÚÙÜÝ[ÑLPÌÑHØÛÜHØ\Ø]Û]ÛÛÛXÚÏH[SÙÛÝ]
-
-HÛ\ÜÏHLÈKLÝ[Y[È^YÜ^KMÝ\^]Ú]H^\ÛHÝ[OHXÚÙÜÝ[ØJMKMKMKJHÙÛÝ]Ø]ÛÙ]Ù]Ù]Ù]]Û\ÜÏHÝ[Y^MÝ[OHXÚÙÜÝ[[X\YÜYY[
-NYËØJKKÌMJH	KØJNNN
-HL	JNØÜ\\ÛÛYØJMKMKMKH]Û\ÜÏH^][\ËXÙ[\\ÝYKX]ÙY[KLÈ]Û\ÜÏH^][\ËXÙ[\Ø\LÜ[Û\ÜÏH^YÜ^KLÌ^X\ÙHÝ\[ÜÜ[Ü[Û\ÜÏHËMMÝ[YY[^][\ËXÙ[\\ÝYKXÙ[\^^È^YÜ^KMLÝ[OHXÚÙÜÝ[ØJMKMKMKJHOÜÜ[Ù]]Û\ÜÏH^][\ËXÙ[\Ø\M]Û\ÜÏHËLÌLÝ[YY[Ý\ÝËZY[Ý[OHXÚÙÜÝ[ØJMKMKMKJH]Û\ÜÏHY[Ý[YY[Ý[OHÚYÜØÛÜKÝ\[ÌLINØXÚÙÜÝ[ÑLPÌÑHÙ]Ù]Ü[Û\ÜÏH^]Ú]H^LÛ[YÚX[\[[\ÈËLM^\YÚÜØÛÜKÝ\[OÜÜ[Ù]Ù]]Û\ÜÏHÜ\]Ü\Y\ÚYÜ\YÜ^KN^KMÙ]]Û\ÜÏH^][\ËXÙ[\\ÝYKX]ÙY[KLÈ]Û\ÜÏH^][\ËXÙ[\Ø\LÜ[Û\ÜÏH^YÜ^KLÌ^X\ÙH\Ú\ÙOÜÜ[Ü[Û\ÜÏHËMMÝ[YY[^][\ËXÙ[\\ÝYKXÙ[\^^È^YÜ^KMLÝ[OHXÚÙÜÝ[ØJMKMKMKJHOÜÜ[Ù]Ü[Û\ÜÏH^]Ú]H^LÛ[YÚX[\[[\ÈËLM^\YÚÜØÛÜKXZÙÝÛ\Ú\Ù_OÜÜ[Ù]]Û\ÜÏH^][\ËXÙ[\\ÝYKX]ÙY[KLÈ]Û\ÜÏH^][\ËXÙ[\Ø\LÜ[Û\ÜÏH^YÜ^KLÌ^X\ÙHÛ[YOÜÜ[Ü[Û\ÜÏHËMMÝ[YY[^][\ËXÙ[\\ÝYKXÙ[\^^È^YÜ^KMLÝ[OHXÚÙÜÝ[ØJMKMKMKJHOÜÜ[Ù]Ü[Û\ÜÏH^]Ú]H^LÛ[YÚX[\[[\ÈËLM^\YÚÜØÛÜKXZÙÝÛÛ[Y_OÜÜ[Ù]]Û\ÜÏH^][\ËXÙ[\\ÝYKX]ÙY[KLÈ]Û\ÜÏH^][\ËXÙ[\Ø\LÜ[Û\ÜÏH^YÜ^KLÌ^X\ÙH]Y[ÏÜÜ[Ü[Û\ÜÏHËMMÝ[YY[^][\ËXÙ[\\ÝYKXÙ[\^^È^YÜ^KMLÝ[OHXÚÙÜÝ[ØJMKMKMKJHOÜÜ[Ù]Ü[Û\ÜÏH^]Ú]H^LÛ[YÚX[\[[\ÈËLM^\YÚÜØÛÜKXZÙÝÛ]Y[ßOÜÜ[Ù]Ù]]Û\ÜÏH]MÝ[Y^M^\ÛHÝ[OHXÚÙÜÝ[ØJMKMKMKNØÜ\\ÛÛYØJMKMKMK
-H]Û\ÜÏH^][\ËXÙ[\Ø\L^YÜ^KMLÜ[ÛÛXÝY\ÏÜÜ[Ü[Û\ÜÏH^]Ú]H	Ý\Ù\\Ù\[Y_OÜÜ[Ù]]Û\ÜÏH^YÜ^KM^^È]LHØ[]	Ý\Ù\Ø[]ÛXÙJ_KÝ\Ù\Ø[]ÛXÙJM
-_OÙ]Ù]Ù]Ù]Y[Ý[Û[\
-^ØÛÛÝOYØÝ[Y[Ù][[Y[RY
-\NÚ\ÓØY[ÏÙK[\S\[\ØY[ÔØÜY[
-N\ÓÙÙÙY[ÙK[\S\[\\ÚØ\
-
-NK[\S\[\ÙÚ[ØÜY[
-_Y[Ý[Û[SÙÚ[
-^Ú\ÓØY[ÏHL[\
-KÙ][Y[Ý]
-
-
-OOÝ\Ù\^Û[YN][Ø\[\Ù\[YNÜ][]]\ÎËÜËÚ[YËÛÛKÜÙ[WÚ[XYÙ\ËÌMÎNMÍÎNMÔXQÍÈØ[]PÑPÌYNÙÎLÑNLLMNQMNXNHKØÛÜOXØ[Ý[]TÝYÙTØÛÜJ[ØÚÓÛÚZ[]KXÙQ]K[YJK\ÓÙÙÙY[HL\ÓØY[ÏHLK[\
-_KML
-_Y[Ý[Û[SÙÛÝ]
-
-^Ú\ÓÙÙÙY[HLK\Ù\[[ØÛÜO[[[\
-_\[\
-OÜØÜ\ØÙOÚ[
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Stage Score - Preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+          body { background: #0D0D0F; }
+          @keyframes spin { to { transform: rotate(360deg); } }
+          .animate-spin { animation: spin 1s linear infinite; }
+        </style>
+  </head>
+  <body class="min-h-screen text-white">
+      <div id="app"></div>div>
+      <script>
+            const TOKEN_ADDRESS = "0x0e8a4f5C5C6dD44eBEaBeD5073582Ce48be112AA";
+            const TOKEN_SYMBOL = "SEED";
+            let isLoggedIn = false;
+            let isLoading = false;
+            let score = null;
+            let user = null;
+            const mockOnChainData = {
+                    purchases: [
+                      { txHash: "0xabc123...", amount: 50000, timestamp: 1723737600, priceAtBuy: 0.00089 },
+                      { txHash: "0xdef456...", amount: 75000, timestamp: 1727020800, priceAtBuy: 0.00112 },
+                            ],
+                    currentBalance: 89500,
+                    totalPurchased: 125000,
+                    totalSold: 35500,
+                    firstBuyTimestamp: 1723737600,
+            };
+            const priceData = { value: 0.00159, priceChange24h: -41.4 };
+            function calculateStageScore(data, price) {
+                    const now = Date.now() / 1000;
+                    const totalUsdInvested = data.purchases.reduce((sum, p) => sum + (p.amount * p.priceAtBuy), 0);
+                    const purchaseScore = Math.min((totalUsdInvested / 500) * 333, 333);
+                    const daysSinceFirst = Math.floor((now - data.firstBuyTimestamp) / 86400);
+                    const holdScore = Math.min((daysSinceFirst / 365) * 333, 333);
+                    const currentValue = data.currentBalance * price;
+                    const netValueRatio = currentValue / totalUsdInvested;
+                    const netTradingScore = Math.min(netValueRatio * 167, 334);
+                    return {
+                              overall: Math.round(purchaseScore + holdScore + netTradingScore),
+                              breakdown: { purchase: Math.round(purchaseScore), holdTime: Math.round(holdScore), netTrading: Math.round(netTradingScore) },
+                              metrics: { totalInvested: totalUsdInvested, currentValue, holdDays: daysSinceFirst, returnPercent: ((netValueRatio - 1) * 100).toFixed(2) }
+                    };
+            }
+            function renderLoginScreen() {
+                    return `<div class="min-h-screen flex flex-col items-center justify-center p-6"><div class="text-center mb-8"><h1 class="text-3xl font-bold text-white mb-2">Stage Score</h1><p class="text-gray-500">Connect your X account to view your $SEED score</p></div><button onclick="handleLogin()" class="flex items-center gap-3 px-6 py-3 rounded-lg transition-all hover:bg-gray-900" style="background:#000;border:1px solid rgba(255,255,255,0.2);"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span class="text-white font-medium">Login with X</span></button><div class="mt-8 text-center text-gray-600 text-sm max-w-md"><p>Your Stage Score is calculated based on:</p><ul class="mt-2 space-y-1 text-left pl-4"><li>• Purchase history of $SEED</li><li>• Hold time duration</li><li>• Net trading value (P/L)</li></ul></div></div>`;
+            }
+            function renderLoadingScreen() {
+                    return `<div class="min-h-screen flex flex-col items-center justify-center"><div class="w-8 h-8 border-2 border-gray-600 border-t-white rounded-full animate-spin"></div><p class="mt-4 text-gray-500">Loading your score...</p></div>`;
+            }
+            function renderDashboard() {
+                    const returnPercent = parseFloat(score.metrics.returnPercent);
+                    return `<div class="min-h-screen p-6"><div class="max-w-2xl mx-auto"><div class="relative rounded-xl overflow-hidden mb-6" style="background:linear-gradient(180deg,rgba(30,30,35,0.9) 0%,rgba(20,20,25,0.95) 100%);border:1px solid rgba(255,255,255,0.08);"><div class="absolute inset-0 opacity-20" style="background-image:url('https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800');background-size:cover;background-position:center;filter:grayscale(100%);"></div><div class="relative p-6"><div class="flex items-start justify-between"><div class="flex items-center gap-4"><div class="w-16 h-16 rounded-lg overflow-hidden" style="border:2px solid rgba(255,255,255,0.1);"><img src="${user.avatar}" alt="${user.name}" class="w-full h-full object-cover" onerror="this.src='https://api.dicebear.com/7.x/identicon/svg?seed=${user.username}'"></div><div><h1 class="text-xl font-semibold text-white">${user.name}</h1><p class="text-gray-500 text-sm">@${user.username}</p><div class="flex gap-2 mt-2"><span class="px-3 py-1 rounded text-xs text-gray-300" style="background:rgba(255,255,255,0.1);">Rank #26,327</span><span class="px-3 py-1 rounded text-xs text-gray-300" style="background:rgba(255,255,255,0.1);">Top 9.2%</span></div></div></div><div class="flex gap-2"><button class="px-4 py-2 rounded-lg text-white font-medium text-sm" style="background:#E25C3E;">Score card</button><button onclick="handleLogout()" class="px-3 py-2 rounded-lg text-gray-400 hover:text-white text-sm" style="background:rgba(255,255,255,0.1);">Logout</button></div></div></div></div><div class="rounded-xl p-6" style="background:linear-gradient(180deg,rgba(25,25,30,0.95) 0%,rgba(18,18,22,0.98) 100%);border:1px solid rgba(255,255,255,0.06);"><div class="flex items-center justify-between py-3"><div class="flex items-center gap-2"><span class="text-gray-300 text-base">Overall</span><span class="w-4 h-4 rounded-full flex items-center justify-center text-xs text-gray-500" style="background:rgba(255,255,255,0.1);">i</span></div><div class="flex items-center gap-4"><div class="w-32 h-2 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.1);"><div class="h-full rounded-full" style="width:${(score.overall/1000)*100}%;background:#E25C3E;"></div></div><span class="text-white text-2xl font-light tabular-nums w-16 text-right">${score.overall}</span></div></div><div class="border-t border-dashed border-gray-800 my-4"></div><div class="flex items-center justify-between py-3"><div class="flex items-center gap-2"><span class="text-gray-300 text-base">Purchase</span><span class="w-4 h-4 rounded-full flex items-center justify-center text-xs text-gray-500" style="background:rgba(255,255,255,0.1);">i</span></div><span class="text-white text-2xl font-light tabular-nums w-16 text-right">${score.breakdown.purchase}</span></div><div class="flex items-center justify-between py-3"><div class="flex items-center gap-2"><span class="text-gray-300 text-base">Hold Time</span><span class="w-4 h-4 rounded-full flex items-center justify-center text-xs text-gray-500" style="background:rgba(255,255,255,0.1);">i</span></div><span class="text-white text-2xl font-light tabular-nums w-16 text-right">${score.breakdown.holdTime}</span></div><div class="flex items-center justify-between py-3"><div class="flex items-center gap-2"><span class="text-gray-300 text-base">Net Trading</span><span class="w-4 h-4 rounded-full flex items-center justify-center text-xs text-gray-500" style="background:rgba(255,255,255,0.1);">i</span></div><span class="text-white text-2xl font-light tabular-nums w-16 text-right">${score.breakdown.netTrading}</span></div></div><div class="rounded-xl overflow-hidden mt-6" style="background:rgba(18,18,22,0.95);border:1px solid rgba(255,255,255,0.06);"><div class="grid grid-cols-6 gap-4 px-4 py-3 text-xs text-gray-500 uppercase tracking-wider" style="border-bottom:1px solid rgba(255,255,255,0.06);"><div>TOKEN</div><div class="text-right">BALANCE</div><div class="text-right">VALUE</div><div class="text-right">AVG BUY</div><div class="text-right">CURRENT</div><div class="text-right">P/L %</div></div><div class="grid grid-cols-6 gap-4 px-4 py-4 items-center hover:bg-white/5 transition-colors"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-green-400 flex items-center justify-center"><span class="text-xs">🌱</span></div><div><div class="flex items-center gap-2"><span class="text-white font-medium">${TOKEN_SYMBOL}</span><span class="text-blue-400 text-xs">✓</span></div><span class="text-gray-600 text-xs font-mono">${TOKEN_ADDRESS.slice(0,6)}...${TOKEN_ADDRESS.slice(-4)}</span></div></div><div class="text-right text-white">${(mockOnChainData.currentBalance/1000).toFixed(1)}K</div><div class="text-right text-white">$${(mockOnChainData.currentBalance*priceData.value).toFixed(2)}</div><div class="text-right text-gray-400">$${(score.metrics.totalInvested/mockOnChainData.totalPurchased).toFixed(6)}</div><div class="text-right text-white">$${priceData.value.toFixed(6)}</div><div class="text-right"><span class="${returnPercent>=0?'text-green-400':'text-red-400'}">${returnPercent>=0?'+':''}${score.metrics.returnPercent}%</span></div></div></div><div class="rounded-xl overflow-hidden mt-6" style="background:rgba(18,18,22,0.95);border:1px solid rgba(255,255,255,0.06);"><div class="px-4 py-3" style="border-bottom:1px solid rgba(255,255,255,0.06);"><span class="text-gray-400 text-sm">Transaction History</span></div>${mockOnChainData.purchases.map(tx=>`<div class="flex items-center justify-between px-4 py-3 hover:bg-white/5" style="border-bottom:1px solid rgba(255,255,255,0.03);"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full flex items-center justify-center bg-green-500/20 text-green-400">↓</div><div><span class="text-white">Buy</span><span class="text-gray-500 text-sm ml-2">${new Date(tx.timestamp*1000).toLocaleDateString()}</span></div></div><div class="text-right"><div class="text-white">${(tx.amount/1000).toFixed(1)}K ${TOKEN_SYMBOL}</div><div class="text-gray-500 text-sm">@ $${tx.priceAtBuy.toFixed(6)}</div></div></div>`).join('')}</div><div class="mt-6 rounded-xl p-4 text-sm" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);"><div class="flex items-center gap-2 text-gray-500"><span>Connected as</span><span class="text-white">@${user.username}</span></div><div class="text-gray-600 text-xs mt-1">Wallet: ${user.wallet.slice(0,6)}...${user.wallet.slice(-4)}</div></div></div></div>`;
+            }
+            function render() {
+                    const app = document.getElementById('app');
+                    if (isLoading) { app.innerHTML = renderLoadingScreen(); }
+                    else if (!isLoggedIn) { app.innerHTML = renderLoginScreen(); }
+                    else { app.innerHTML = renderDashboard(); }
+            }
+            function handleLogin() {
+                    isLoading = true;
+                    render();
+                    setTimeout(() => {
+                              user = { name: "Paul Warren", username: "4ormund", avatar: "https://pbs.twimg.com/profile_images/1679966748083994624/RXUaFbnz_400x400.jpg", wallet: "0x5B3EC1f58484Bf3d44C8DA3E8291159D159BbE89" };
+                              score = calculateStageScore(mockOnChainData, priceData.value);
+                              isLoggedIn = true;
+                              isLoading = false;
+                              render();
+                    }, 1500);
+            }
+            function handleLogout() { isLoggedIn = false; user = null; score = null; render(); }
+            render();
+      </script>
+  </body>body>
+</html>html>
+      </script>
+    </style></title>
+  </head>
