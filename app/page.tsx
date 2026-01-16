@@ -158,8 +158,7 @@ export default function Home() {
           <div className="grid grid-cols-6 gap-4 py-4 items-center border-b divider">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-green-400 flex items-center justify-center text-xs">
-                ð±
-              </div>
+                S              </div>
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-white font-medium">{TOKEN_SYMBOL}</span>
@@ -194,8 +193,7 @@ export default function Home() {
             <div key={i} className="flex items-center justify-between py-3 border-b divider">
               <div className="flex items-center gap-3">
                 <div className="w-6 h-6 rounded-full flex items-center justify-center bg-green-500/20 text-green-400 text-xs">
-                  â
-                </div>
+                  B                </div>
                 <div>
                   <span className="text-white text-sm">Buy</span>
                   <span className="text-gray-500 text-xs ml-2">
